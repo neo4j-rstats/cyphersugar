@@ -1,0 +1,94 @@
+---
+title: "Cypher Translation"
+author: "Colin Fay"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cypher translation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here are the translation from the cypher reference manual : 
+
+> https://neo4j.com/docs/developer-manual/current/cypher/ 
+
+The first line is the cypher statement, the second is the translation in cyphersugar code, the third the cyphersugar output.
+
+```{r}
+library(cyphersugar)
+```
+
+
+## 3.1.1. What is Cypher?
+
+```
+MATCH (john {name: 'John'})-[:friend]->()-[:friend]->(fof)
+RETURN john.name, fof.name
+```
+
+```{r}
+MATCH() %>%
+  node(john, labels = c(name = "John")) %>%
+  rel(friend) %>% 
+  node() %>%
+  rel(friend) %>%
+  node(fof) %>%
+  RETURN(john.name, fof.name)
+```
+
+## 3.1.2. Querying and updating the graph
+
+```
+MATCH (n {name: 'John'})-[:FRIEND]-(friend)
+WITH n, count(friend) AS friendsCount
+WHERE friendsCount > 3
+RETURN n, friendsCount
+```
+
+```{r}
+MATCH() %>%
+  node(n, labels = c(name = 'John')) %>%
+  rel(FRIEND) %>%
+  node(friend) %>%
+  WITH(n, count(friend) %AS% friendsCount) %>%
+  WHERE(friendsCount > 3) %>%
+  RETURN(n, friendsCount)
+```
+
+```
+MATCH (n {name: 'John'})-[:FRIEND]-(friend)
+WITH n, count(friend) AS friendsCount
+SET n.friendsCount = friendsCount
+RETURN n.friendsCount
+```
+
+```{r}
+MATCH() %>%
+  node(n, labels = c(name = "John")) %>%
+  to(FRIEND) %>%
+  node(friend) %>% 
+  WITH(n, count(friend) %AS% friendsCount) %>%
+  SET(n.friendsCount = friendsCount) %>%
+  RETURN(n.friendsCount)
+```
+
+
+```
+CREATE (adam:User { name: 'Adam' }),(pernilla:User { name: 'Pernilla' }),(david:User { name: 'David'}), (adam)-[:FRIEND]->(pernilla),(pernilla)-[:FRIEND]->(david)
+```
+
+```{r}
+CREATE(node(adam = User, labels = c(name = "Adam")), 
+       node(pernilla = User, labels = c(name = "pernilla")), 
+       node(david = User, labels = c(name = "david")), 
+       node(adam))
+```
+

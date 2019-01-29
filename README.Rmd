@@ -1,0 +1,70 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
+__Disclaimer: this repo is just a Proof of Concept and should not be used.__
+
+# cyphersugar
+
+{cyphersugar} is intended to bring syntactic sugar to Neo4J cypher langugage, so you can write cypher queries in a more natural way if you come from R. 
+
+## Convention
+
+Every cypher function is in uppercase (`MATCH`, `RETURN`, `LIMIT`...). The wrappers are in lower case (`node`, `to`, `from`...)
+
+## Example
+
+```{r example}
+library(cyphersugar)
+MATCH() %>%
+  node(n = "Person", labels = c(name = "Colin")) %>%
+  to(k = "KNOWS") %>%
+  node("Person") %>%
+  RETURN(person = "n", knows = "k") %>%
+  LIMIT(25)
+```
+
+The end idea is, of course, to be able to use it with `neo4r`, or other Neo4J R Drivers.
+
+```{r eval = FALSE}
+library(neo4r)
+con <- neo4j_api$new(url = "http://localhost:7474", 
+                     user = "neo4j", password = "neo4j")
+con$ping()
+
+MATCH() %>%
+  node('n') %>%
+  RETURN(node = "n") %>%
+  LIMIT(25) %>%
+  call_api(con)
+```
+
+## Examples
+
+```{r}
+CREATE(node(adam = "User", labels = c(name = "Adam")), 
+       node(pernilla = "User", labels = c(name = "pernilla")), 
+       node(david = "User", labels = c(name = "david")))
+```
+
+```{r}
+MATCH() %>%
+  node(r = "record") %>%
+  to("WAS_RECORDED") %>% 
+  node(b = "Band") %>% 
+  RETURN("r AS band")
+```
+

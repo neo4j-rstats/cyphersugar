@@ -1,0 +1,22 @@
+Package: cyphersugar
+Title: A Neo4J Cypher Query Language Syntactic Sugar
+Version: 0.0.0.9000
+Authors@R: person('Colin', 'Fay', email = 'contact@colinfay.me', role = c('cre', 'aut'))
+Description: An Implementation of Neo4J Cypher Query Language inside R.
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/neo4j-rstats/cyphersugar
+BugReports: https://github.com/neo4j-rstats/cyphersugar/issues
+Encoding: UTF-8
+Imports: 
+    glue,
+    magrittr,
+    purrr,
+    rlang
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.0
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
